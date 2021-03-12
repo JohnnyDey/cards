@@ -1,0 +1,26 @@
+package com.cards.controller.socket.message;
+
+import com.cards.model.Player;
+import com.cards.model.card.Card;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class OutputMessage {
+    private MessageType type;
+    private Player[] players;
+    private Card card;
+    private Card[] cards;
+
+    public OutputMessage(MessageType type) {
+        this.type = type;
+    }
+
+    public enum MessageType{
+        PLAYER_LIST_UPDATED,
+        NEW_ANSWER,
+        NEXT_ROUND,
+        EXCEPTION
+    }
+}
