@@ -22,20 +22,19 @@ public class CardExtractor<T extends Card> {
     }
 
     public void extractCards(Stack<T> ts) {
-        String filename = null;
         try {
-            filename = ResourceUtils.getFile(fileName).getPath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            while (reader.ready()){
-                T card = clazz.getConstructor().newInstance();
-                card.setText(reader.readLine());
-                card.setUid(UUID.randomUUID().toString());
-                ts.push(card);
+            String filename = ResourceUtils.getFile(fileName).getPath();
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                while (reader.ready()){
+                    T card = clazz.getConstructor().newInstance();
+                    card.setText(reader.readLine());
+                    card.setUid(UUID.randomUUID().toString());
+                    ts.push(card);
+                }
+            } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
             }
-        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
