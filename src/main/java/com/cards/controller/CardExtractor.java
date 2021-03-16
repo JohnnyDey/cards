@@ -24,7 +24,7 @@ public class CardExtractor<T extends Card> {
     public void extractCards(Stack<T> ts) {
         String filename = null;
         try {
-            filename = ResourceUtils.getFile(fileName).getPath();
+            filename = ResourceUtils.getFile(fileName).getAbsolutePath();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
