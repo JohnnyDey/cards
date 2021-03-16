@@ -3,6 +3,7 @@ package com.cards.controller;
 import com.cards.model.card.Card;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
@@ -22,19 +23,16 @@ public class CardExtractor<T extends Card> {
     }
 
     public void extractCards(Stack<T> ts) {
-        try {
-            String filename = ResourceUtils.getFile(fileName).getAbsolutePath();
-            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-                while (reader.ready()){
-                    T card = clazz.getConstructor().newInstance();
-                    card.setText(reader.readLine());
-                    card.setUid(UUID.randomUUID().toString());
-                    ts.push(card);
-                }
-            } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+        String filename = null;
+        filename = new ClassPathResource(this.fileName).getPath();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            while (reader.ready()){
+                T card = clazz.getConstructor().newInstance();
+                card.setText(reader.readLine());
+                card.setUid(UUID.randomUUID().toString());
+                ts.push(card);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
