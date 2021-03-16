@@ -23,7 +23,7 @@ public class CardExtractor<T extends Card> {
 
     public void extractCards(Stack<T> ts) {
         try {
-            String filename = ResourceUtils.getFile(fileName).getPath();
+            String filename = ResourceUtils.getFile(fileName).getAbsolutePath();
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 while (reader.ready()){
                     T card = clazz.getConstructor().newInstance();

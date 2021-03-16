@@ -18,9 +18,9 @@ public class CacheStorage {
 
     CacheStorage(){
         game = new Game();
-        Deck<BlackCard> qDeck = new Deck<>(new CardExtractor<>("classpath:decks" + File.separator + "q.txt", BlackCard.class));
+        Deck<BlackCard> qDeck = new Deck<>(new CardExtractor<>("decks" + File.separator + "q.txt", BlackCard.class));
         game.setQuestionDeck(qDeck);
-        Deck<WhiteCard> aDeck = new Deck<>(new CardExtractor<>("classpath:decks" + File.separator + "a.txt", WhiteCard.class));
+        Deck<WhiteCard> aDeck = new Deck<>(new CardExtractor<>("decks" + File.separator + "a.txt", WhiteCard.class));
         game.setAnswersDeck(aDeck);
     }
 
