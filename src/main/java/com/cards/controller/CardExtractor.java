@@ -3,6 +3,7 @@ package com.cards.controller;
 import com.cards.model.card.Card;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
@@ -23,11 +24,7 @@ public class CardExtractor<T extends Card> {
 
     public void extractCards(Stack<T> ts) {
         String filename = null;
-        try {
-            filename = ResourceUtils.getFile(fileName).getAbsolutePath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        filename = new ClassPathResource(this.fileName).getPath();
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             while (reader.ready()){
                 T card = clazz.getConstructor().newInstance();
