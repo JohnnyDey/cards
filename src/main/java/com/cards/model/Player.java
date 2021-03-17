@@ -3,11 +3,13 @@ package com.cards.model;
 import com.cards.model.card.WhiteCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@ToString
 public class Player {
     private final String uid;
     private final String username;
