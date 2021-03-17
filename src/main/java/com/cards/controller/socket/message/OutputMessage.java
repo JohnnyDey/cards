@@ -4,9 +4,11 @@ import com.cards.model.Player;
 import com.cards.model.card.Card;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class OutputMessage {
     private MessageType type;
     private Player[] players;

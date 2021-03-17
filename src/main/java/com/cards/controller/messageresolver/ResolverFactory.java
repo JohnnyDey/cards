@@ -35,7 +35,7 @@ public class ResolverFactory {
                 resolver = new ChoseCardResolver(gameController, inputMessage);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown message type");
+                throw new IllegalArgumentException("Неизвестный тип события");
         }
         resolver.setMessagingTemplate(messagingTemplate);
         return resolver;

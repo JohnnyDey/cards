@@ -2,9 +2,11 @@ package com.cards.controller.socket.message;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class InputMessage {
     private String senderUid;
     private String gameUid;

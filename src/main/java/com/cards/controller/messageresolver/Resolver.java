@@ -5,10 +5,12 @@ import com.cards.controller.socket.message.InputMessage;
 import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.Player;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Map;
 
+@Slf4j
 public abstract class Resolver {
     @Setter
     protected SimpMessagingTemplate messagingTemplate;
@@ -38,6 +40,7 @@ public abstract class Resolver {
     private void sendMessage(String receiveUid, String destination){
         OutputMessage msg = receiveUid.equals(inputMessage.getSenderUid()) ? buildReplyMessage(receiveUid) : buildMessage(receiveUid);
         if (msg != null) {
+            log.info("Message {} send to {}", msg, receiveUid);
             messagingTemplate.convertAndSendToUser(receiveUid, destination, msg);
         }
     }
