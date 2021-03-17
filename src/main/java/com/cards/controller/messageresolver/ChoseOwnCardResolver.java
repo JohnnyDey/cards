@@ -6,19 +6,20 @@ import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.card.Card;
 
 public class ChoseOwnCardResolver extends Resolver {
+    private Card answer;
     public ChoseOwnCardResolver(GameController gameController, InputMessage inputMessage) {
         super(gameController, inputMessage);
     }
     @Override
     public void apply() {
+        answer = gameController.answer(inputMessage.getSenderUid(), inputMessage.getCardUid());
         sendMessageToPlayers();
     }
 
     @Override
-    public OutputMessage buildMessage(){
-        Card card = gameController.answer(inputMessage.getSenderUid(), inputMessage.getCardUid());
+    public OutputMessage buildMessage(String receiveUid){
         OutputMessage message = new OutputMessage(OutputMessage.MessageType.NEW_ANSWER);
-        message.setCard(card);
+        message.setCard(answer);
         return message;
     }
 }

@@ -24,9 +24,11 @@ public class SocketController {
         try {
             resolverFactory.getResolver(msg).apply();
         } catch (Exception e) {
+            OutputMessage payload = new OutputMessage(OutputMessage.MessageType.EXCEPTION);
+            payload.setDetail(e.getMessage());
             messagingTemplate.convertAndSendToUser(principal.getName(),
                     Resolver.getDestination(gameId),
-                    new OutputMessage(OutputMessage.MessageType.EXCEPTION));
+                    payload);
         }
     }
 

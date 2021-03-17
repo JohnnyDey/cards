@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 public class GameController {
@@ -63,20 +64,24 @@ public class GameController {
 
     public Card answer(String userUid, String cardUid){
         Player player = game.getPlayers().get(userUid);
-        if (player == null) throw new IllegalArgumentException("No player found");
+        if (player == null) throw new IllegalArgumentException("Игрок не найден");
         WhiteCard card = player.getCards().get(cardUid);
-        if (card == null) throw new IllegalArgumentException("No card found");
+        if (card == null) throw new IllegalArgumentException("У игрока нет такой карты");
         game.getAnswers().put(player, card);
         return card;
     }
 
-    public void chooseWinner(String cardUid){
-        game.getAnswers().forEach((key, value) -> {
-            if(cardUid.equals(value.getUid())){
-                key.incrementScore();
+    public Player chooseWinner(String cardUid){
+        AtomicReference<Player> winner = new AtomicReference<>();
+        game.getAnswers().forEach((player, card) -> {
+            if(cardUid.equals(card.getUid())){
+                player.incrementScore();
+                winner.set(player);
             }
         });
+        if (winner.get() == null) throw new IllegalArgumentException("Игрока нет в списке участников");
         game.getAnswers().clear();
+        return winner.get();
     }
 
 }

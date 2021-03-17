@@ -4,9 +4,9 @@ import com.cards.model.card.Card;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Stack;
+import java.util.UUID;
 
 public class CardExtractor<T extends Card> {
     private final String fileName;
@@ -21,9 +21,14 @@ public class CardExtractor<T extends Card> {
         try {
             ClassPathResource cpr = new ClassPathResource(this.fileName);
             byte[] bdata = FileCopyUtils.copyToByteArray(cpr.getInputStream());
-            String data = new String(bdata, StandardCharsets.UTF_8);
-            System.out.println(data);
-        } catch (IOException e) {
+            String[] words = new String(bdata, StandardCharsets.UTF_8).split("\n");
+            for (String word : words) {
+                T card = clazz.getConstructor().newInstance();
+                card.setText(word.trim());
+                card.setUid(UUID.randomUUID().toString());
+                ts.push(card);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

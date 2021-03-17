@@ -22,7 +22,7 @@ public abstract class UpdateUsersResolver extends Resolver{
 
 
     @Override
-    public OutputMessage buildMessage(){
+    public OutputMessage buildMessage(String receiveUid){
         Map<String, Player> players = gameController.getGame().getPlayers();
         Player[] playersArray = new Player[players.size()];
         players.values().toArray(playersArray);

@@ -12,6 +12,7 @@ public class OutputMessage {
     private Player[] players;
     private Card card;
     private Card[] cards;
+    private String detail;
 
     public OutputMessage(MessageType type) {
         this.type = type;

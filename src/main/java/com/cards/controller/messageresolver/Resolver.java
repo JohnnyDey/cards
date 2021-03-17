@@ -20,7 +20,10 @@ public abstract class Resolver {
         this.inputMessage = inputMessage;
     }
     public abstract void apply();
-    public abstract OutputMessage buildMessage();
+    public abstract OutputMessage buildMessage(String uid);
+    public OutputMessage buildReplyMessage(String uid) {
+        return buildMessage(uid);
+    }
 
     public static String getDestination(String gameId){
         return "/game/" + gameId + "/subscriber";
@@ -29,8 +32,14 @@ public abstract class Resolver {
     protected void sendMessageToPlayers() {
         Map<String, Player> players = gameController.getGame().getPlayers();
         String destination = getDestination(inputMessage.getGameUid());
-        players.forEach((uid, player) ->
-                messagingTemplate.convertAndSendToUser(uid, destination, buildMessage()));
+        players.forEach((uid, player) -> sendMessage(uid, destination));
+    }
+
+    private void sendMessage(String receiveUid, String destination){
+        OutputMessage msg = receiveUid.equals(inputMessage.getSenderUid()) ? buildReplyMessage(receiveUid) : buildMessage(receiveUid);
+        if (msg != null) {
+            messagingTemplate.convertAndSendToUser(receiveUid, destination, msg);
+        }
     }
 
 }

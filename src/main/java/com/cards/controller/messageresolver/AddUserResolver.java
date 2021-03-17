@@ -6,9 +6,6 @@ import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.Player;
 import com.cards.model.card.Card;
 
-import java.lang.reflect.Array;
-import java.util.Collections;
-
 public class AddUserResolver extends UpdateUsersResolver{
     public AddUserResolver(GameController gameController, InputMessage inputMessage) {
         super(gameController, inputMessage);
@@ -16,12 +13,15 @@ public class AddUserResolver extends UpdateUsersResolver{
 
     @Override
     void updateUsers() {
+        if (gameController.getGame().getPlayers().containsKey(inputMessage.getSenderUid())) {
+            throw new IllegalArgumentException("Игрок уже в игре");
+        }
         gameController.addPlayer(inputMessage.getSenderUid());
     }
 
     @Override
-    public OutputMessage buildMessage() {
-        OutputMessage msg = super.buildMessage();
+    public OutputMessage buildReplyMessage(String uid) {
+        OutputMessage msg = super.buildReplyMessage(uid);
         Player player = gameController.getGame().getPlayers().get(inputMessage.getSenderUid());
 
         Card[] card = new Card[player.getCards().size()];
