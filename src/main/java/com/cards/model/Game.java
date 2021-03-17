@@ -13,6 +13,7 @@ public class Game {
     public static final int PLAYER_LIMIT = 8;
     public static final int CARD_LIMIT = 8;
 
+    private String uid;
     private Map<String, Player> players = new HashMap<>();
     private int leader = 0;
     private BlackCard question;
