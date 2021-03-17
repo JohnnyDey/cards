@@ -17,8 +17,8 @@ public class GameController {
     @Setter @Getter
     private Game game;
 
-    public Player addPlayer(String playerUID){
-        return addPlayer(new Player(playerUID));
+    public Player addPlayer(String playerUID, String username){
+        return addPlayer(new Player(playerUID, username));
     }
 
     public Player addPlayer(Player player){

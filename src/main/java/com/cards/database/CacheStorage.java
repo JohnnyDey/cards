@@ -1,7 +1,6 @@
 package com.cards.database;
 
 import com.cards.controller.CardExtractor;
-import com.cards.controller.MockCardExtractor;
 import com.cards.model.Deck;
 import com.cards.model.Game;
 import com.cards.model.card.BlackCard;

@@ -16,7 +16,7 @@ public class AddUserResolver extends UpdateUsersResolver{
         if (gameController.getGame().getPlayers().containsKey(inputMessage.getSenderUid())) {
             throw new IllegalArgumentException("Игрок уже в игре");
         }
-        gameController.addPlayer(inputMessage.getSenderUid());
+        gameController.addPlayer(inputMessage.getSenderUid(), inputMessage.getDetail());
     }
 
     @Override

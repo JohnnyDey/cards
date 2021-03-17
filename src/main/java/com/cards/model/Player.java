@@ -10,12 +10,14 @@ import java.util.Map;
 @Getter
 public class Player {
     private final String uid;
+    private final String username;
     @JsonIgnore
     private final Map<String, WhiteCard> cards = new HashMap<>();
     private int score = 0;
 
-    public Player(String id){
+    public Player(String id, String username){
         this.uid = id;
+        this.username = username;
     }
 
     public void incrementScore(){

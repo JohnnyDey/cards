@@ -22,6 +22,8 @@ public class SocketController {
     @MessageMapping("/game/{gameId}")
     public void send(Principal principal, InputMessage msg, @DestinationVariable String gameId) {
         try {
+            msg.setSenderUid(principal.getName());
+            msg.setGameUid(gameId);
             resolverFactory.getResolver(msg).apply();
         } catch (Exception e) {
             OutputMessage payload = new OutputMessage(OutputMessage.MessageType.EXCEPTION);

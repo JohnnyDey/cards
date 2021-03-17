@@ -2,7 +2,6 @@ package com.cards.model;
 
 import com.cards.model.card.BlackCard;
 import com.cards.model.card.WhiteCard;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 

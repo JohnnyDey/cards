@@ -20,7 +20,6 @@ public abstract class UpdateUsersResolver extends Resolver{
         sendMessageToPlayers();
     }
 
-
     @Override
     public OutputMessage buildMessage(String receiveUid){
         Map<String, Player> players = gameController.getGame().getPlayers();
