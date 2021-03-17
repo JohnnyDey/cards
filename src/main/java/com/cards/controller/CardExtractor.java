@@ -1,17 +1,12 @@
 package com.cards.controller;
 
 import com.cards.model.card.Card;
-import org.apache.catalina.core.ApplicationContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.ResourceUtils;
+import org.springframework.util.FileCopyUtils;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Stack;
-import java.util.UUID;
 
 public class CardExtractor<T extends Card> {
     private final String fileName;
@@ -23,16 +18,12 @@ public class CardExtractor<T extends Card> {
     }
 
     public void extractCards(Stack<T> ts) {
-        String filename = null;
-        filename = new ClassPathResource(this.fileName).getPath();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            while (reader.ready()){
-                T card = clazz.getConstructor().newInstance();
-                card.setText(reader.readLine());
-                card.setUid(UUID.randomUUID().toString());
-                ts.push(card);
-            }
-        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+        try {
+            ClassPathResource cpr = new ClassPathResource(this.fileName);
+            byte[] bdata = FileCopyUtils.copyToByteArray(cpr.getInputStream());
+            String data = new String(bdata, StandardCharsets.UTF_8);
+            System.out.println(data);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
