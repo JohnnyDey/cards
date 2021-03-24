@@ -22,11 +22,19 @@ public class GameController {
     }
 
     public Player addPlayer(Player player){
+        if (player.getUsername() == null || player.getUid() == null)
+            throw new IllegalArgumentException("Игрок должен иметь UID и имя");
+        if (game.getPlayers().containsKey(player.getUid()))
+            throw new IllegalArgumentException("Игрок с таким UID уже в игре");
         redrawCards(player);
         return game.getPlayers().put(player.getUid(), player);
     }
 
     public void removePlayer(String playerUID){
+        if (playerUID == null)
+            throw new IllegalArgumentException("UID не должен быть null");
+        if (!game.getPlayers().containsKey(playerUID))
+            throw new IllegalArgumentException("Игрока UID=" + playerUID +" нет в игре");
         game.getPlayers().remove(playerUID);
     }
 
@@ -49,7 +57,7 @@ public class GameController {
         redrawCards();
     }
 
-    public void nextPlayer(){
+    private void nextPlayer(){
         int leader = game.getLeader() + 1;
         if(leader >= game.getPlayers().size()){
             leader = 0;
@@ -57,7 +65,7 @@ public class GameController {
         game.setLeader(leader);
     }
 
-    public void nextQuestion(){
+    private void nextQuestion(){
         BlackCard question = game.getQuestionDeck().drawCard();
         game.setQuestion(question);
     }
@@ -65,8 +73,10 @@ public class GameController {
     public Card answer(String userUid, String cardUid){
         Player player = game.getPlayers().get(userUid);
         if (player == null) throw new IllegalArgumentException("Игрок не найден");
+        if (game.getAnswers().get(player) != null) throw new IllegalArgumentException("Игрок уже дал ответ");
         WhiteCard card = player.getCards().get(cardUid);
         if (card == null) throw new IllegalArgumentException("У игрока нет такой карты");
+        player.getCards().remove(cardUid);
         game.getAnswers().put(player, card);
         return card;
     }
@@ -80,7 +90,6 @@ public class GameController {
             }
         });
         if (winner.get() == null) throw new IllegalArgumentException("Игрока нет в списке участников");
-        game.getAnswers().clear();
         return winner.get();
     }
 
