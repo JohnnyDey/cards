@@ -35,6 +35,9 @@ public class CacheStorage {
         game.setAnswersDeck(aDeck);
         game.setUid(UUID.randomUUID().toString());
         games.add(game);
+        //todo: убрать фейк
+        BlackCard question = game.getQuestionDeck().drawCard();
+        game.setQuestion(question);
         return game;
     }
 
