@@ -5,8 +5,10 @@ import com.cards.model.card.WhiteCard;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 @Getter @Setter
 public class Game {
@@ -15,6 +17,7 @@ public class Game {
 
     private String uid;
     private Map<String, Player> players = new HashMap<>();
+    private Queue<Player> order = new ArrayDeque<>();
     private int leader = 0;
     private BlackCard question;
     private Deck<BlackCard> questionDeck;

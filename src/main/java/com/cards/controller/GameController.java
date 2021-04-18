@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
@@ -27,6 +28,7 @@ public class GameController {
         if (game.getPlayers().containsKey(player.getUid()))
             throw new IllegalArgumentException("Игрок с таким UID уже в игре");
         redrawCards(player);
+        game.getOrder().add(player);
         return game.getPlayers().put(player.getUid(), player);
     }
 
@@ -58,11 +60,11 @@ public class GameController {
     }
 
     private void nextPlayer(){
-        int leader = game.getLeader() + 1;
-        if(leader >= game.getPlayers().size()){
-            leader = 0;
+        Queue<Player> order = game.getOrder();
+        if (order.isEmpty()){
+            order.addAll(game.getPlayers().values());
         }
-        game.setLeader(leader);
+        order.poll();
     }
 
     private void nextQuestion(){
