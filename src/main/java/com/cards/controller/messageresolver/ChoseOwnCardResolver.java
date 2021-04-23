@@ -20,6 +20,7 @@ public class ChoseOwnCardResolver extends Resolver {
     public OutputMessage buildMessage(String receiveUid){
         OutputMessage message = new OutputMessage(OutputMessage.MessageType.NEW_ANSWER);
         message.setCard(answer);
+        message.setDetail(inputMessage.getSenderUid());
         return message;
     }
 }

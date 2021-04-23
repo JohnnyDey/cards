@@ -32,7 +32,7 @@ public class SocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     public void onDisconnect(SessionDisconnectEvent disconnectEvent){
         Principal user = disconnectEvent.getUser();
         if(user != null){
-            gameController.setGame(storage.getGameByUid(null));
+            gameController.setGame(storage.getGameByUserUid(user.getName()));
             gameController.removePlayer(user.getName());
         }
     }

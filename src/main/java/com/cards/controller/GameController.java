@@ -37,7 +37,15 @@ public class GameController {
             throw new IllegalArgumentException("UID не должен быть null");
         if (!game.getPlayers().containsKey(playerUID))
             throw new IllegalArgumentException("Игрока UID=" + playerUID +" нет в игре");
-        game.getPlayers().remove(playerUID);
+        Player player = game.getPlayers().remove(playerUID);
+        game.getOrder().remove(player);
+        if (game.getOrder().isEmpty()){
+            game.getOrder().addAll(game.getPlayers().values());
+        }
+        //todo: переделать в 3
+        if (game.getPlayers().size() < 2) {
+//            game.setStatus(Game.GameStatus.NEW);
+        }
     }
 
     private void redrawCards(){

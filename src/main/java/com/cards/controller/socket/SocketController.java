@@ -47,16 +47,12 @@ public class SocketController {
         }
     }
 
-    @MessageMapping("/common/getGames")
-    @SendTo("/common")
-    public List<String> getGames() {
-        return storage.getPublicGames().stream().map(Game::getUid).collect(Collectors.toList());
-    }
-
     @MessageMapping("/common/createGame")
-    @SendTo("/common")
-    public String createGame() {
-        return storage.createGame().getUid();
+    public void createGame(Principal principal) {
+        Game game = storage.createGame();
+        messagingTemplate.convertAndSendToUser(principal.getName(),
+                "/common",
+                game.getUid());
     }
 
 }

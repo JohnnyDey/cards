@@ -5,7 +5,7 @@ import com.cards.controller.socket.message.InputMessage;
 import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.Game;
 import com.cards.model.Player;
-import com.cards.model.card.Card;
+import com.cards.model.card.WhiteCard;
 
 public class ChoseCardResolver extends Resolver {
     private Player winner;
@@ -22,13 +22,13 @@ public class ChoseCardResolver extends Resolver {
     @Override
     public OutputMessage buildMessage(String receiveUid){
         Game game = gameController.getGame();
-        Player player = game.getPlayers().get(inputMessage.getSenderUid());
-        Card card = player.getCards().get(inputMessage.getCardUid());
+        Player player = game.getPlayers().get(receiveUid);
 
         OutputMessage message = new OutputMessage(OutputMessage.MessageType.NEXT_ROUND);
-        message.setCards((Card[]) player.getCards().values().toArray());
-        message.setCard(card);
-        message.setPlayers(new Player[]{winner});
+        message.setCard(game.getQuestion());
+        message.setCards(player.getCards().values().toArray(new WhiteCard[0]));
+        message.setPlayers(game.getPlayers().values().toArray(new Player[0]));
+        message.setDetail(gameController.getLeader().getUsername());
         return message;
     }
 }

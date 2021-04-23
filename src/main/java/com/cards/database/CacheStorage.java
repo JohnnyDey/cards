@@ -9,22 +9,26 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 @Scope("singleton")
 public class CacheStorage {
-    private final List<Game> games = new ArrayList<>();
+    private final Map<String, Game> games = new HashMap<>();
 
     CacheStorage(){
         createGame();
     }
 
     public Game getGameByUid(String uid){
-        //todo
-        return games.get(0);
+        return games.get(uid);
+    }
+
+    public Game getGameByUserUid(String uid){
+        return games.values().stream()
+                .filter(game -> game.getPlayers().containsKey(uid))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public Game createGame() {
@@ -34,14 +38,12 @@ public class CacheStorage {
         Deck<WhiteCard> aDeck = new Deck<>(new CardExtractor<>("decks" + File.separator + "a.txt", WhiteCard.class));
         game.setAnswersDeck(aDeck);
         game.setUid(UUID.randomUUID().toString());
-        games.add(game);
+        games.put(game.getUid(), game);
         //todo: убрать фейк
         BlackCard question = game.getQuestionDeck().drawCard();
         game.setQuestion(question);
+        game.setStatus(Game.GameStatus.ANSWERING);
         return game;
     }
 
-    public List<Game> getPublicGames(){
-        return games;
-    }
 }
