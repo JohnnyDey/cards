@@ -40,7 +40,7 @@ public abstract class Resolver {
     private void sendMessage(String receiveUid, String destination){
         OutputMessage msg = receiveUid.equals(inputMessage.getSenderUid()) ? buildReplyMessage(receiveUid) : buildMessage(receiveUid);
         if (msg != null) {
-            log.info("Message {} send to {}", msg, receiveUid);
+            log.info("Message {} send to {}", msg.getType(), receiveUid);
             messagingTemplate.convertAndSendToUser(receiveUid, destination, msg);
         }
     }

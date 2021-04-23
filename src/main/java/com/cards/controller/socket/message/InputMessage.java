@@ -6,7 +6,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class InputMessage {
     private String senderUid;
     private String gameUid;

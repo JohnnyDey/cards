@@ -33,7 +33,7 @@ public class SocketController {
     @MessageMapping("/game/{gameId}")
     public void handleGameMessage(Principal principal, InputMessage msg, @DestinationVariable String gameId) {
         try {
-            log.info("Message {} received", msg);
+            log.info("Message {} received", msg.getType());
             msg.setSenderUid(principal.getName());
             msg.setGameUid(gameId);
             resolverFactory.getResolver(msg).apply();
