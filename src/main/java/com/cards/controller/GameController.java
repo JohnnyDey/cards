@@ -53,6 +53,7 @@ public class GameController {
     }
 
     public void endRound(){
+        game.setStatus(Game.GameStatus.ANSWERING);
         nextPlayer();
         nextQuestion();
         game.getAnswers().clear();
@@ -61,10 +62,10 @@ public class GameController {
 
     private void nextPlayer(){
         Queue<Player> order = game.getOrder();
+        order.poll();
         if (order.isEmpty()){
             order.addAll(game.getPlayers().values());
         }
-        order.poll();
     }
 
     private void nextQuestion(){
@@ -73,17 +74,22 @@ public class GameController {
     }
 
     public Card answer(String userUid, String cardUid){
+        if (!game.getStatus().equals(Game.GameStatus.ANSWERING)) throw new IllegalArgumentException("Неподходящая фаза для ответа");
         Player player = game.getPlayers().get(userUid);
         if (player == null) throw new IllegalArgumentException("Игрок не найден");
+        if (getLeader().getUid().equals(userUid)) throw new IllegalArgumentException("Ведущий не может давать ответ");
         if (game.getAnswers().get(player) != null) throw new IllegalArgumentException("Игрок уже дал ответ");
         WhiteCard card = player.getCards().get(cardUid);
         if (card == null) throw new IllegalArgumentException("У игрока нет такой карты");
         player.getCards().remove(cardUid);
         game.getAnswers().put(player, card);
+        checkGameStatus();
         return card;
     }
 
-    public Player chooseWinner(String cardUid){
+    public Player chooseWinner(String cardUid, String userUid){
+        if (!game.getStatus().equals(Game.GameStatus.CHOOSING)) throw new IllegalArgumentException("Неподходящая фаза для выбора");
+        if (!getLeader().getUid().equals(userUid)) throw new IllegalArgumentException("Игрок не является ведущим");
         AtomicReference<Player> winner = new AtomicReference<>();
         game.getAnswers().forEach((player, card) -> {
             if(cardUid.equals(card.getUid())){
@@ -93,6 +99,16 @@ public class GameController {
         });
         if (winner.get() == null) throw new IllegalArgumentException("Игрока нет в списке участников");
         return winner.get();
+    }
+
+    private void checkGameStatus(){
+        if (game.getStatus() == Game.GameStatus.ANSWERING && game.getAnswers().size() == game.getPlayers().size() - 1) {
+            game.setStatus(Game.GameStatus.CHOOSING);
+        }
+    }
+
+    public Player getLeader(){
+        return game.getOrder().peek();
     }
 
 }

@@ -14,7 +14,7 @@ public class ChoseCardResolver extends Resolver {
     }
     @Override
     public void apply() {
-        winner = gameController.chooseWinner(inputMessage.getCardUid());
+        winner = gameController.chooseWinner(inputMessage.getCardUid(), inputMessage.getSenderUid());
         gameController.endRound();
         sendMessageToPlayers();
     }

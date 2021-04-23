@@ -12,11 +12,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SpringBootTest
 public class GameControllerTest {
@@ -97,18 +102,21 @@ public class GameControllerTest {
 
     @Test
     void checkChooseAnswer() {
-        String uid = UUID.randomUUID().toString();
-        Player player = new Player(uid, "Player");
+        Player player = new Player(UUID.randomUUID().toString(), "Player");
+        Player player2 = new Player(UUID.randomUUID().toString(), "Player");
         controller.addPlayer(player);
-        WhiteCard card = getFirstCard(player);
-        controller.answer(uid, card.getUid());
+        controller.addPlayer(player2);
+        controller.endRound();
+        Pair<Player, WhiteCard> pair = answerFirst(player, player2);
+
         Map<Player, WhiteCard> answers = controller.getGame().getAnswers();
 
-        Assert.state(answers.containsKey(player), "Player answer not found");
-        Assert.notNull(answers.get(player), "Card not found in answers");
-        Assert.state(answers.get(player).equals(card), "Card in answers incorrect");
-        Assert.isNull(player.getCards().get(card.getUid()), "Player should remove card");
-        Assert.state(player.getCards().size() == Game.CARD_LIMIT - 1, "Incorrect player card count");
+        Assert.state(controller.getGame().getStatus().equals(Game.GameStatus.CHOOSING), "Game status incorrect");
+        Assert.state(answers.containsKey(pair.getFirst()), "Player answer not found");
+        Assert.notNull(answers.get(pair.getFirst()), "Card not found in answers");
+        Assert.state(answers.get(pair.getFirst()).equals(pair.getSecond()), "Card in answers incorrect");
+        Assert.isNull(pair.getFirst().getCards().get(pair.getSecond().getUid()), "Player should remove card");
+        Assert.state(pair.getFirst().getCards().size() == Game.CARD_LIMIT - 1, "Incorrect player card count");
     }
 
     @Test
@@ -122,12 +130,15 @@ public class GameControllerTest {
 
     @Test
     void checkChooseAnswerTwice() {
-        String uid = UUID.randomUUID().toString();
-        Player player = new Player(uid, "Player");
+        Player player = new Player(UUID.randomUUID().toString(), "Player");
+        Player player2 = new Player(UUID.randomUUID().toString(), "Player");
         controller.addPlayer(player);
-        controller.answer(uid, getFirstCard(player).getUid());
+        controller.addPlayer(player2);
+        controller.endRound();
+        answerFirst(player, player2);
+
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> controller.answer(uid, getFirstCard(player).getUid()));
+                () -> answerFirst(player, player2));
     }
 
     @Test
@@ -142,14 +153,15 @@ public class GameControllerTest {
 
     @Test
     void checkChooseWinner() {
-        String uid = UUID.randomUUID().toString();
-        Player player = new Player(uid, "Player");
+        Player player = new Player(UUID.randomUUID().toString(), "Player");
+        Player player2 = new Player(UUID.randomUUID().toString(), "Player");
         controller.addPlayer(player);
-        WhiteCard card = getFirstCard(player);
-        controller.answer(uid, card.getUid());
-        controller.chooseWinner(card.getUid());
+        controller.addPlayer(player2);
+        controller.endRound();
+        Pair<Player, WhiteCard> pair = answerFirst(player, player2);
+        controller.chooseWinner(pair.getSecond().getUid(), controller.getLeader().getUid());
 
-        Assert.state(player.getScore() == 1, "Score incorrect");
+        Assert.state(pair.getFirst().getScore() == 1, "Score incorrect");
     }
 
     @Test
@@ -159,7 +171,7 @@ public class GameControllerTest {
         controller.addPlayer(player);
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> controller.chooseWinner("fake uid"));
+                () -> controller.chooseWinner("fake uid", controller.getLeader().getUid()));
     }
 
     @Test
@@ -171,7 +183,8 @@ public class GameControllerTest {
 
         controller.endRound();
 
-        Assert.state(controller.getGame().getLeader() == 1, "Wrong leader");
+        Assert.state(controller.getGame().getStatus().equals(Game.GameStatus.ANSWERING), "null leader");
+        Assert.notNull(controller.getGame().getOrder().peek(), "null leader");
         Assert.notNull(controller.getGame().getQuestion(), "No question");
         Assert.isTrue(controller.getGame().getAnswers().isEmpty(), "Answers wasn't clear");
     }
@@ -182,24 +195,37 @@ public class GameControllerTest {
         Player player2 = new Player(UUID.randomUUID().toString(), "Player 2");
         controller.addPlayer(player1);
         controller.addPlayer(player2);
-
+        controller.endRound();
         BlackCard lastQuestion = null;
         for (int i = 1; i <= 10; i++) {
-            WhiteCard player1Answer = getFirstCard(player1);
-            WhiteCard player2Answer = getFirstCard(player2);
+            Pair<Player, WhiteCard> pair = answerFirst(player1, player2);
 
-            controller.answer(player1.getUid(), player1Answer.getUid());
-            controller.answer(player2.getUid(), player2Answer.getUid());
             controller.endRound();
 
-            Assert.state(controller.getGame().getLeader() == i % 2, "Wrong leader");
+            Assert.notNull(controller.getGame().getOrder().peek(), "Null leader");
             Assert.state(!controller.getGame().getQuestion().equals(lastQuestion), "Question is not changed");
             lastQuestion = controller.getGame().getQuestion();
-            Assert.isNull(player1.getCards().get(player1Answer.getUid()), "Player should remove card");
-            Assert.state(player1.getCards().size() == Game.CARD_LIMIT, "Player didn't draw card");
-            Assert.isNull(player2.getCards().get(player2Answer.getUid()), "Player should remove card");
-            Assert.state(player2.getCards().size() == Game.CARD_LIMIT, "Player didn't draw card");
+
+            Assert.isNull(pair.getFirst().getCards().get(pair.getFirst().getUid()), "Player should remove card");
+            Assert.state(pair.getFirst().getCards().size() == Game.CARD_LIMIT, "Player didn't draw card");
         }
+    }
+
+    private Pair<Player, WhiteCard> answerFirst(Player... players){
+        return Arrays.stream(players).map(this::answerIfNotLeader).filter(Objects::nonNull).findFirst().get();
+    }
+
+    private Pair<Player, WhiteCard> answer(Player player) {
+        WhiteCard answer = getFirstCard(player);
+        controller.answer(player.getUid(), answer.getUid());
+        return Pair.of(player, answer);
+    }
+
+    private Pair<Player, WhiteCard> answerIfNotLeader(Player player){
+        if (!controller.getLeader().getUid().equals(player.getUid())){
+            return answer(player);
+        }
+        return null;
     }
 
     private WhiteCard getFirstCard(Player player){

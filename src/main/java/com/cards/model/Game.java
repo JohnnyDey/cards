@@ -13,15 +13,21 @@ import java.util.Queue;
 @Getter @Setter
 public class Game {
     public static final int PLAYER_LIMIT = 8;
-    public static final int CARD_LIMIT = 8;
+    public static final int CARD_LIMIT = 10;
 
     private String uid;
+    private GameStatus status = GameStatus.NEW;
     private Map<String, Player> players = new HashMap<>();
     private Queue<Player> order = new ArrayDeque<>();
-    private int leader = 0;
     private BlackCard question;
     private Deck<BlackCard> questionDeck;
     private Deck<WhiteCard> answersDeck;
     private Map<Player, WhiteCard> answers = new HashMap<>();
+
+    public enum GameStatus {
+        NEW,
+        ANSWERING,
+        CHOOSING
+    }
 
 }
