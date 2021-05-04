@@ -9,6 +9,7 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter @Setter
 public class Game {
@@ -22,7 +23,7 @@ public class Game {
     private BlackCard question;
     private Deck<BlackCard> questionDeck;
     private Deck<WhiteCard> answersDeck;
-    private Map<Player, WhiteCard> answers = new HashMap<>();
+    private Map<Player, WhiteCard> answers = new ConcurrentHashMap<>();
 
     public enum GameStatus {
         NEW,
