@@ -1,15 +1,13 @@
 package com.cards.controller.messageresolver;
 
-import com.cards.controller.GameController;
-import com.cards.controller.socket.message.InputMessage;
 import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.card.Card;
+import org.springframework.stereotype.Component;
 
-public class ChoseOwnCardResolver extends Resolver {
+@Component("CHOOSE_OWN")
+public class ChoseOwnCardResolver extends AbstractResolver {
     private Card answer;
-    public ChoseOwnCardResolver(GameController gameController, InputMessage inputMessage) {
-        super(gameController, inputMessage);
-    }
+
     @Override
     public void apply() {
         answer = gameController.answer(inputMessage.getSenderUid(), inputMessage.getCardUid());

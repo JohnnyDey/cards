@@ -1,17 +1,16 @@
 package com.cards.controller.messageresolver;
 
-import com.cards.controller.GameController;
-import com.cards.controller.socket.message.InputMessage;
 import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.Game;
 import com.cards.model.Player;
 import com.cards.model.card.WhiteCard;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-public class ChoseCardResolver extends Resolver {
+@Component("CHOSE_BEST")
+public class ChoseCardResolver extends AbstractResolver {
     private Player winner;
-    public ChoseCardResolver(GameController gameController, InputMessage inputMessage) {
-        super(gameController, inputMessage);
-    }
+
     @Override
     public void apply() {
         winner = gameController.chooseWinner(inputMessage.getCardUid(), inputMessage.getSenderUid());

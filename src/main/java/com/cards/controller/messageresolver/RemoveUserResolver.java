@@ -1,12 +1,10 @@
 package com.cards.controller.messageresolver;
 
-import com.cards.controller.GameController;
-import com.cards.controller.socket.message.InputMessage;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("REMOVE_USER")
 public class RemoveUserResolver extends UpdateUsersResolver{
-    public RemoveUserResolver(GameController gameController, InputMessage inputMessage) {
-        super(gameController, inputMessage);
-    }
     @Override
     void updateUsers() {
         gameController.removePlayer(inputMessage.getSenderUid());

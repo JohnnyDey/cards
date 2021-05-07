@@ -1,12 +1,10 @@
 package com.cards.controller.messageresolver;
 
-import com.cards.controller.GameController;
-import com.cards.controller.socket.message.InputMessage;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("START")
 public class StartGameResolver extends ChoseCardResolver{
-    public StartGameResolver(GameController gameController, InputMessage inputMessage) {
-        super(gameController, inputMessage);
-    }
 
     @Override
     public void apply() {

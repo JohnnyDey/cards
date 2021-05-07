@@ -1,16 +1,11 @@
 package com.cards.controller.messageresolver;
 
-import com.cards.controller.GameController;
-import com.cards.controller.socket.message.InputMessage;
 import com.cards.controller.socket.message.OutputMessage;
 import com.cards.model.Player;
 
 import java.util.Map;
 
-public abstract class UpdateUsersResolver extends Resolver{
-    public UpdateUsersResolver(GameController gameController, InputMessage inputMessage) {
-        super(gameController, inputMessage);
-    }
+public abstract class UpdateUsersResolver extends AbstractResolver {
 
     abstract void updateUsers();
 
