@@ -16,10 +16,6 @@ import java.util.*;
 public class CacheStorage {
     private final Map<String, Game> games = new HashMap<>();
 
-    CacheStorage(){
-        createGame();
-    }
-
     public Game getGameByUid(String uid){
         return games.get(uid);
     }
@@ -39,10 +35,6 @@ public class CacheStorage {
         game.setAnswersDeck(aDeck);
         game.setUid(UUID.randomUUID().toString());
         games.put(game.getUid(), game);
-        //todo: убрать фейк
-        BlackCard question = game.getQuestionDeck().drawCard();
-        game.setQuestion(question);
-        game.setStatus(Game.GameStatus.ANSWERING);
         return game;
     }
 

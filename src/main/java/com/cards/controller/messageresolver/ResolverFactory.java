@@ -34,6 +34,9 @@ public class ResolverFactory {
             case CHOSE_BEST:
                 resolver = new ChoseCardResolver(gameController, inputMessage);
                 break;
+            case START:
+                resolver = new StartGameResolver(gameController, inputMessage);
+                break;
             default:
                 throw new IllegalArgumentException("Неизвестный тип события");
         }

@@ -28,6 +28,7 @@ public abstract class UpdateUsersResolver extends Resolver{
 
         OutputMessage message = new OutputMessage(OutputMessage.MessageType.PLAYER_LIST_UPDATED);
         message.setPlayers(playersArray);
+        message.setGameStatus(gameController.getGame().getStatus().toString());
         return message;
     }
 }

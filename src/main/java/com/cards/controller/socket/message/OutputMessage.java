@@ -14,6 +14,7 @@ public class OutputMessage {
     private Player[] players;
     private Card card;
     private Card[] cards;
+    private String gameStatus;
     private String detail;
 
     public OutputMessage(MessageType type) {

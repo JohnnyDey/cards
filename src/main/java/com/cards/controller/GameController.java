@@ -42,9 +42,8 @@ public class GameController {
         if (game.getOrder().isEmpty()){
             game.getOrder().addAll(game.getPlayers().values());
         }
-        //todo: переделать в 3
-        if (game.getPlayers().size() < 2) {
-//            game.setStatus(Game.GameStatus.NEW);
+        if (game.getPlayers().size() < 3) {
+            game.setStatus(Game.GameStatus.NEW);
         }
     }
 

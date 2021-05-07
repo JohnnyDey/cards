@@ -18,5 +18,6 @@ public class InputMessage {
         REMOVE_USER,
         CHOOSE_OWN,
         CHOSE_BEST,
+        START
     }
 }
